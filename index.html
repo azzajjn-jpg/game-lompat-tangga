@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spacebar Jump Game</title>
+  <style>
+    canvas { background: #87ceeb; display: block; margin: 0 auto; }
+    body { text-align: center; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <h2>Press Spacebar to Jump!</h2>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Karakter utama
+    const player = {
+      x: 200,
+      y: 350,
+      radius: 20,
+      color: 'orange',
+      velocityY: 0,
+      jumpPower: -10,
+      gravity: 0.5,
+      grounded: true,
+    };
+    
+    // Game loop
+    function update() {
+      player.velocityY += player.gravity;
+      player.y += player.velocityY;
+
+      // Lantai/ground
+      if (player.y + player.radius > canvas.height) {
+        player.y = canvas.height - player.radius;
+        player.velocityY = 0;
+        player.grounded = true;
+      }
+
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    // Render fungsi
+    function draw() {
+      // bersihkan canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // gambar "ground"
+      ctx.fillStyle = "#228B22";
+      ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+
+      // gambar player
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+      ctx.fillStyle = player.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Event untuk loncat
+    document.addEventListener('keydown', function(e) {
+      if (e.code === "Space" && player.grounded) {
+        player.velocityY = player.jumpPower;
+        player.grounded = false;
+      }
+    });
+
+    update();
+  </script>
+</body>
+</html>
